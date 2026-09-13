@@ -10,7 +10,7 @@ hl.env("GDK_SCALE", tostring(omarchy_gdk_scale))
 hl.monitor({ output = "DP-2", mode = "3440x1440@165", position = "0x0", scale = omarchy_monitor_scale, supports_hdr = 1 })
 
 -- WSD WaveShare-119 e-ink: rotated 270° into a 1480x320 strip below the ultrawide
-hl.monitor({ output = "HDMI-A-3", mode = "320x1480@57.68", position = "0x1440", scale = 1.6, transform = 1 })
+hl.monitor({ output = "HDMI-A-3", mode = "320x1480@57.68", position = "0x1440", scale = 1.0, transform = 1 })
 
 -- Fallback for other monitors
 hl.monitor({ output = "", mode = "preferred", position = "auto", scale = omarchy_monitor_scale })
