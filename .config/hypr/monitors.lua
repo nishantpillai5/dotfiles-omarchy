@@ -5,10 +5,12 @@ local omarchy_gdk_scale = 1
 local omarchy_monitor_scale = 1
 
 hl.env("GDK_SCALE", tostring(omarchy_gdk_scale))
+
+-- Dell AW3423DWF ultrawide (primary): 165Hz, HDR on
+hl.monitor({ output = "DP-2", mode = "3440x1440@165", position = "0x0", scale = omarchy_monitor_scale, supports_hdr = 1 })
+
+-- WSD WaveShare-119 e-ink: rotated 270° into a 1480x320 strip below the ultrawide
+hl.monitor({ output = "HDMI-A-3", mode = "320x1480@57.68", position = "0x1440", scale = 1.6, transform = 1 })
+
+-- Fallback for other monitors
 hl.monitor({ output = "", mode = "preferred", position = "auto", scale = omarchy_monitor_scale })
-
--- Configure a specific monitor.
--- hl.monitor({ output = "DP-2", mode = "2560x1440@144", position = "0x0", scale = 1 })
-
--- Portrait/rotated secondary monitor (transform: 1 = 90°, 3 = 270°).
--- hl.monitor({ output = "DP-2", mode = "preferred", position = "auto", scale = 1, transform = 1 })
