@@ -12,5 +12,9 @@ hl.monitor({ output = "DP-2", mode = "3440x1440@165", position = "0x0", scale = 
 -- WSD WaveShare-119 e-ink: rotated 270° into a 1480x320 strip below the ultrawide
 hl.monitor({ output = "HDMI-A-3", mode = "320x1480@57.68", position = "0x1440", scale = 1.0, transform = 1 })
 
+-- Pin the e-ink strip to the last workspace (20 = highest Hyprland workspace number)
+-- so it always shows up as the final workspace in the list.
+hl.workspace_rule({ workspace = "20", monitor = "HDMI-A-3", default = true, persistent = true })
+
 -- Fallback for other monitors
 hl.monitor({ output = "", mode = "preferred", position = "auto", scale = omarchy_monitor_scale })

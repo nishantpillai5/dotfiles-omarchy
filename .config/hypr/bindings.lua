@@ -74,16 +74,24 @@ end
 hl.unbind("SUPER + J")
 hl.unbind("SUPER + K")
 hl.unbind("SUPER + L")
-for _, entry in ipairs({ { "H", "l" }, { "L", "r" }, { "J", "d" }, { "K", "u" } }) do
-  o.bind("SUPER + " .. entry[1], "Focus window " .. entry[2],
-    hl.dsp.focus({ direction = entry[2] }))
-end
+o.bind("SUPER + H", "Focus window l", hl.dsp.focus({ direction = "l" }))
+o.bind("SUPER + L", "Focus window r", hl.dsp.focus({ direction = "r" }))
+
+-- Win+J / Win+K now flip workspaces (J = next, K = previous).
+-- Vertical vim focus moves to SUPER+ALT+UP/DOWN (SUPER+ALT+K is Tmux keybindings).
+o.bind("SUPER + J", "Next workspace", hl.dsp.focus({ workspace = "e+1" }))
+o.bind("SUPER + K", "Previous workspace", hl.dsp.focus({ workspace = "e-1" }))
+o.bind("SUPER + ALT + DOWN", "Focus window down", hl.dsp.focus({ direction = "d" }))
+o.bind("SUPER + ALT + UP", "Focus window up", hl.dsp.focus({ direction = "u" }))
 
 -- Vim-style window swap (old: mod+shift+H/J/K/L). Omarchy's own swap is on SUPER+SHIFT+arrows.
-for _, entry in ipairs({ { "H", "l" }, { "L", "r" }, { "J", "d" }, { "K", "u" } }) do
+-- SUPER+SHIFT+J / K are used for moving the window to the next/previous workspace below.
+for _, entry in ipairs({ { "H", "l" }, { "L", "r" } }) do
   o.bind("SUPER + SHIFT + " .. entry[1], "Swap window " .. entry[2],
     hl.dsp.window.swap({ direction = entry[2] }))
 end
+o.bind("SUPER + SHIFT + J", "Move window to next workspace", hl.dsp.window.move({ workspace = "e+1" }))
+o.bind("SUPER + SHIFT + K", "Move window to previous workspace", hl.dsp.window.move({ workspace = "e-1" }))
 
 -- --- --- Re-homes for the Omarchy features displaced above ---------------------
 o.bind("SUPER + Z", "Toggle window split", hl.dsp.layout("togglesplit")) -- was SUPER+J; matches old mod+Z
