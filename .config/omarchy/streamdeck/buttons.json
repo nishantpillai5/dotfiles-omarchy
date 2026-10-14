@@ -1,0 +1,137 @@
+{
+  "version": 3,
+  "activeProfileId": "plus",
+  "profiles": [
+    {
+      "id": "plus",
+      "name": "Page 1",
+      "layout": "plus",
+      "buttons": [
+        {
+          "index": 0,
+          "label": "Magnitude",
+          "icon_path": "",
+          "action_type": "magnitude",
+          "action_value": "magnitude-toggle"
+        },
+        {
+          "index": 1,
+          "label": "Night",
+          "icon_path": "/home/noobaf/.config/omarchy/streamdeck/icons/night.svg",
+          "action_type": "command",
+          "action_value": "omarchy-toggle-nightlight"
+        },
+        {
+          "index": 2,
+          "label": "Lock",
+          "icon_path": "/home/noobaf/.config/omarchy/streamdeck/icons/lock.svg",
+          "action_type": "command",
+          "action_value": "omarchy-system-lock"
+        },
+        {
+          "index": 3,
+          "label": "Discord",
+          "icon_path": "/home/noobaf/.config/omarchy/streamdeck/icons/logo-discord.svg",
+          "action_type": "command",
+          "action_value": "omarchy-launch-webapp https://discord.com/channels/@me"
+        },
+        {
+          "index": 4,
+          "label": "Audio out",
+          "icon_path": "",
+          "action_type": "audio_output",
+          "action_value": ""
+        },
+        {
+          "index": 5,
+          "label": "",
+          "icon_path": "",
+          "action_type": "command",
+          "action_value": ""
+        },
+        {
+          "index": 6,
+          "label": "",
+          "icon_path": "",
+          "action_type": "command",
+          "action_value": ""
+        },
+        {
+          "index": 7,
+          "label": "Element",
+          "icon_path": "/home/noobaf/.config/omarchy/streamdeck/icons/speech.svg",
+          "action_type": "command",
+          "action_value": "element-desktop"
+        }
+      ]
+    },
+    {
+      "id": "page2",
+      "name": "Page 2",
+      "layout": "plus",
+      "buttons": [
+        {
+          "index": 0,
+          "label": "2·1",
+          "icon_path": "",
+          "action_type": "command",
+          "action_value": "true"
+        },
+        {
+          "index": 1,
+          "label": "2·2",
+          "icon_path": "",
+          "action_type": "command",
+          "action_value": "true"
+        },
+        {
+          "index": 2,
+          "label": "2·3",
+          "icon_path": "",
+          "action_type": "command",
+          "action_value": "true"
+        },
+        {
+          "index": 3,
+          "label": "2·4",
+          "icon_path": "",
+          "action_type": "command",
+          "action_value": "true"
+        },
+        {
+          "index": 4,
+          "label": "2·5",
+          "icon_path": "",
+          "action_type": "command",
+          "action_value": "true"
+        },
+        {
+          "index": 5,
+          "label": "2·6",
+          "icon_path": "",
+          "action_type": "command",
+          "action_value": "true"
+        },
+        {
+          "index": 6,
+          "label": "2·7",
+          "icon_path": "",
+          "action_type": "command",
+          "action_value": "true"
+        },
+        {
+          "index": 7,
+          "label": "2·8",
+          "icon_path": "",
+          "action_type": "command",
+          "action_value": "true"
+        }
+      ]
+    }
+  ],
+  "defaults": {
+    "xl": "",
+    "original": "",
+    "plus": "plus"
+  }
+}
