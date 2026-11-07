@@ -3,15 +3,24 @@
   "enableInstallTelemetry": false,
   "theme": "omarchy-system",
   "packages": [
-    "npm:pi-web-search",
     "npm:pi-memory",
     "npm:pi-context-view",
     "npm:pi-tokenburn",
     "npm:@narumitw/pi-usage",
     "npm:@gotgenes/pi-permission-system",
     "npm:pi-messenger@0.15.2",
-    "npm:@magnitudedev/pi-extension@0.0.2"
+    "npm:@magnitudedev/pi-extension@0.0.2",
+    "npm:pi-web-access"
   ],
   "defaultProvider": "magnitude",
-  "defaultModel": "qwen3.8-27b:gguf:q4"
+  "defaultModel": "qwen3.8-27b:gguf:q4",
+  "lastChangelogVersion": "1.5.0",
+  "extensionChangelogVersions": {
+    "{\"source\":\"npm:pi-memory\",\"scope\":\"user\"}": "0.4.2",
+    "{\"source\":\"npm:pi-context-view\",\"scope\":\"user\"}": "0.8.3",
+    "{\"source\":\"npm:@narumitw/pi-usage\",\"scope\":\"user\"}": "0.69.2",
+    "{\"source\":\"npm:@gotgenes/pi-permission-system\",\"scope\":\"user\"}": "42.0.0",
+    "{\"source\":\"npm:pi-messenger@0.15.2\",\"scope\":\"user\"}": "0.15.2",
+    "{\"source\":\"npm:pi-web-access\",\"scope\":\"user\"}": "0.47.0"
+  }
 }
