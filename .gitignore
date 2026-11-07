@@ -5,3 +5,4 @@
 .config/omadeck/.llm-live*
 .config/omadeck/.sink-live*
 .config/omadeck/config.toml.*
+.config/git/config_local
