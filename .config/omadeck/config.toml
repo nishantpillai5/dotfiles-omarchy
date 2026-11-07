@@ -1,0 +1,378 @@
+# omadeck configuration - edit by hand or with the `omadeck` app.
+
+brightness = 75
+
+[style]
+follow_theme = true
+
+[[key]]
+index = 0
+label = "Discord"
+icon = "icons/omarchy-discord.png"
+
+[key.action]
+type = "app"
+command = "omarchy launch or focus discord 'omarchy-launch-webapp https://discord.com/channels/@me'"
+
+[[key]]
+index = 1
+label = "Element"
+icon = "icons/io.element.Element.svg"
+busy_while_running = true
+
+[key.action]
+type = "app"
+command = "omarchy launch or focus element element-desktop"
+
+[[key]]
+index = 2
+label = "Browser"
+icon = "icons/brave-browser.png"
+
+[key.action]
+type = "app"
+command = "omarchy launch browser"
+
+[[key]]
+index = 3
+label = "Steam"
+icon = "icons/steam.png"
+
+[key.action]
+type = "app"
+command = "omarchy launch or focus steam 'steam'"
+
+[[key]]
+index = 6
+
+[key.action]
+type = "script"
+path = "clock-city-toggle.sh"
+
+[key.live]
+source = "command"
+command = 'c=$(cat /home/noobaf/.config/omadeck/clock-city 2>/dev/null); t=Europe/Stockholm; [ "$c" = "Delhi" ] && t=Asia/Kolkata; TZ=$t date +%H:%M; echo $c'
+interval = 1
+
+[[key]]
+index = 7
+label = "Dictation"
+glyph = "󰍬"
+
+[key.action]
+type = "app"
+command = "voxtype record start"
+
+[key.release]
+type = "script"
+path = "dictation-stop.sh"
+
+[[key]]
+index = 8
+label = "4"
+
+[key.action]
+type = "hyprland"
+dispatch = "workspace 4"
+
+[[key]]
+index = 9
+label = "5"
+
+[key.action]
+type = "hyprland"
+dispatch = "workspace 5"
+
+[[key]]
+index = 10
+label = "Mute"
+glyph = "󰝟"
+
+[key.action]
+type = "app"
+command = "omarchy audio output volume mute-toggle"
+
+[[key]]
+index = 11
+label = "Night light"
+glyph = "󰖔"
+
+[key.action]
+type = "app"
+command = "omarchy toggle nightlight"
+
+[[key]]
+index = 12
+label = "Wallpaper"
+icon = "icons/preferences-desktop-wallpaper.png"
+
+[key.action]
+type = "app"
+command = "omarchy theme bg next"
+
+[[key]]
+index = 13
+label = "Ding!"
+icon = "icons/audio-x-generic.png"
+
+[key.action]
+type = "sound"
+file = "/usr/share/sounds/freedesktop/stereo/complete.oga"
+
+[[key]]
+index = 14
+label = "Lock"
+icon = "icons/system-lock-screen.png"
+
+[key.action]
+type = "app"
+command = "omarchy system lock"
+
+[[page]]
+name = "AI agent"
+
+[[page.key]]
+index = 0
+label = "LLM"
+glyph = "󰚩"
+
+[page.key.action]
+type = "app"
+command = "/usr/bin/magnitude models load qwen3.8-27b:gguf:q4"
+
+[page.key.on]
+label = "LLM ready"
+glyph = "󰚩"
+state = """s=$(tail -c 262144 /home/noobaf/.magnitude/logs/inference.log 2>/dev/null | grep "model.id=qwen3.8-27b" | grep -E "residency (transitioned|terminalized)" | grep -oE 'residency.state="[a-z]+"' | tail -1 | cut -d'"' -f2 | tr 'A-Z' 'a-z'); [ -n "$s" ] || s=$(/usr/bin/magnitude models status 2>/dev/null | awk 'NR>3 && NF {print $(NF-1); exit}' | tr 'A-Z' 'a-z'); case $s in ready) exit 0;; loading) p=$(/usr/bin/magnitude models status 2>/dev/null | awk 'NR>3 && NF { if ($(NF-1) ~ /%$/) print $(NF-2), $(NF-1); else print $(NF-1); exit }'); echo ${p:-Loading}; exit 75;; *) exit 1;; esac"""
+interval = 5
+slow = true
+
+[page.key.on.action]
+type = "app"
+command = "/usr/bin/magnitude models stop"
+
+[page.key.busy]
+bar = true
+
+[page.key.live]
+source = "command"
+command = '''l=/home/noobaf/.magnitude/logs/inference.log; m=qwen3.8-27b:gguf:q4; c=/home/noobaf/.config/omadeck/.llm-live; s=$(tail -c 262144 "$l" 2>/dev/null | grep "model.id=qwen3.8-27b" | grep -E "residency (transitioned|terminalized)" | grep -oE 'residency.state="[a-z]+"' | tail -1 | cut -d'"' -f2 | sed 's/vacant/stopped/'); if [ "$s" = 'ready' ]; then if [ "$(cat "$c" 2>/dev/null)" = "$m" ]; then cat "$c.label" 2>/dev/null || echo Ready; else /usr/bin/magnitude models status "$m" 2>/dev/null | head -1 > "$c.label"; printf '%s\n' "$m" > "$c"; cat "$c.label"; fi; else awk -v s="$s" 'BEGIN{print toupper(substr(s,1,1)) substr(s,2)}'; fi'''
+
+[[page.key]]
+index = 4
+label = "OpenHands"
+icon = "icons/openhands.png"
+
+[page.key.action]
+type = "app"
+command = "systemctl --user start openhands-canvas"
+
+[page.key.on]
+label = "OpenHands"
+icon = "icons/openhands.png"
+state = "pgrep -f 'agent-[c]anvas' >/dev/null"
+interval = 5
+slow = true
+
+[page.key.on.action]
+type = "app"
+command = "pkill -f 'agent-[c]anvas'; pkill -f 'agent-[s]erver'"
+
+
+[[page.key]]
+index = 1
+label = "Pi"
+glyph = "π"
+
+[page.key.action]
+type = "script"
+path = "launch-pi.sh"
+
+[[page.key]]
+index = 2
+label = "Pi cont"
+glyph = "⏵"
+
+[page.key.action]
+type = "app"
+command = "tmux new-window /home/noobaf/.local/bin/pi --continue"
+
+[[page.key]]
+index = 3
+label = "Stop Pi"
+glyph = "⏹"
+
+[page.key.action]
+type = "script"
+path = "stop-pi.sh"
+
+[[page.key]]
+index = 5
+label = "New Term"
+glyph = "f0541"
+
+[page.key.action]
+type = "app"
+command = "tmux new-window"
+
+[[page.key]]
+index = 6
+label = "Close Term"
+glyph = "f015c"
+
+[page.key.action]
+type = "script"
+path = "tmux-kill-window.sh"
+
+[[page.key]]
+index = 7
+label = "/compact"
+
+[page.key.action]
+type = "script"
+path = "prompt-compact.sh"
+
+[[page.dial]]
+index = 0
+label = "Source"
+glyph = "󰋀"
+
+[page.dial.turn_left]
+type = "app"
+command = "/home/noobaf/.config/omadeck/audio-output-switch.sh prev"
+
+[page.dial.turn_right]
+type = "app"
+command = "/home/noobaf/.config/omadeck/audio-output-switch.sh next"
+
+[page.dial.press]
+type = "app"
+command = "/home/noobaf/.config/omadeck/audio-output-switch.sh next"
+
+[page.dial.live]
+source = "command"
+command = '''s=$(timeout 3 pactl get-default-sink 2>/dev/null); f="$s $(pactl list sinks short 2>/dev/null | cut -d' ' -f1 | tr '\n' ' ')"; c=/home/noobaf/.config/omadeck/.sink-live; if [ "$f" = "$(cat "$c.mtime" 2>/dev/null)" ] && [ -f "$c" ]; then cat "$c"; exit 0; fi; d=$(pactl -f json list sinks 2>/dev/null | jq -r --arg n "$s" '[.[] | select(.name==$n)][0] | (.description // .properties."device.description" // .name) // empty'); b=$(printf "%s\n" "$d" | grep -oE '\[[^]]+\]' | head -1 | tr -d '[]'); if [ -n "$b" ]; then out=$b; elif [ -n "$d" ]; then out=$(printf "%s\n" "$d" | cut -d' ' -f1-3); else out=None; fi; printf '%s\n' "$out" > "$c"; printf '%s\n' "$f" > "$c.mtime"; printf '%s\n' "$out"'''
+
+[[page.dial]]
+index = 1
+label = "Media"
+
+[page.dial.turn_left]
+type = "media"
+seek = -5
+
+[page.dial.turn_right]
+type = "media"
+seek = 5
+
+[page.dial.press]
+type = "media"
+
+[[page.dial]]
+index = 2
+label = "Scroll"
+turn_left_glyph = "f0143"
+turn_right_glyph = "f0140"
+
+[page.dial.turn_left]
+type = "app"
+command = "/home/noobaf/.config/omadeck/mouse-scroll.sh up"
+
+[page.dial.turn_right]
+type = "app"
+command = "/home/noobaf/.config/omadeck/mouse-scroll.sh down"
+
+[[page.dial]]
+index = 3
+label = "Terminal"
+glyph = "󰕈"
+turn_left_glyph = "f0141"
+turn_right_glyph = "f0142"
+press_glyph = "f036c"
+
+[page.dial.turn_left]
+type = "app"
+command = "tmux select-window -t -1"
+
+[page.dial.turn_right]
+type = "app"
+command = "tmux select-window -t +1"
+
+[page.dial.press]
+type = "script"
+path = "dictation-toggle.sh"
+
+[page.dial.release]
+type = "script"
+path = "dictation-stop.sh"
+
+[[dial]]
+index = 0
+label = "Volume"
+glyph = "f057e"
+
+[dial.turn_left]
+type = "volume"
+change = -5
+
+[dial.turn_right]
+type = "volume"
+change = 5
+
+[dial.press]
+type = "volume"
+mute = true
+
+[[dial]]
+index = 1
+label = "Brave"
+
+[dial.turn_left]
+type = "app_volume"
+app = "brave"
+change = -5
+
+[dial.turn_right]
+type = "app_volume"
+focused = true
+change = 5
+
+[dial.press]
+type = "app_volume"
+focused = true
+mute = true
+
+[[dial]]
+index = 2
+label = "Element"
+icon = "icons/io.element.Element.svg"
+
+[dial.turn_left]
+type = "app_volume"
+app = "element"
+change = -5
+
+[dial.turn_right]
+type = "app_volume"
+app = "element"
+change = 5
+
+[dial.press]
+type = "app_volume"
+app = "element"
+mute = true
+
+[[dial]]
+index = 3
+label = "Media"
+
+[dial.turn_left]
+type = "media"
+seek = -5
+
+[dial.turn_right]
+type = "media"
+seek = 5
+
+[dial.press]
+type = "media"

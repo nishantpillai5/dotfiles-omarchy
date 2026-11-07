@@ -1,0 +1,44 @@
+{
+  "$schema": "https://raw.githubusercontent.com/gotgenes/pi-packages/main/packages/pi-permission-system/schemas/permissions.schema.json",
+  "yoloMode": false,
+  "permission": {
+    "*": "ask",
+    "memory_write": "allow",
+    "path": {
+    },
+    "path_read": {
+      "~/.pi/agent/sessions": "allow",
+      "~/.pi/agent/sessions/*": "allow",
+      "~/.claude/projects": "allow",
+      "~/.claude/projects/*": "allow"
+    },
+    "path_write": {
+      "~/.pi/agent/extensions/pi-permission-system/config.json": "ask"
+    },
+    "bash": {
+      "*": "ask",
+      "command -v workmux": "allow",
+      "command -v wm-agent": "allow",
+      "wm-agent default": "allow",
+      "workmux status": "allow",
+      "workmux status *": "allow",
+      "workmux list": "allow",
+      "workmux list *": "allow",
+      "workmux path *": "allow",
+      "workmux wait *": "allow",
+      "workmux capture *": "allow",
+      "tmux show-options *": "allow",
+      "tmux show *": "allow",
+      "tmux list-sessions *": "allow"
+    },
+    "external_directory": {
+      "*": "ask"
+    },
+    "external_directory_read": {
+      "~/.pi/agent/sessions": "allow",
+      "~/.pi/agent/sessions/*": "allow",
+      "~/.claude/projects": "allow",
+      "~/.claude/projects/*": "allow"
+    }
+  }
+}

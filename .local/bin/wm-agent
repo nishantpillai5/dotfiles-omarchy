@@ -1,0 +1,103 @@
+#!/bin/sh
+# One agent per worktree, in a hidden session that several clients attach to:
+# the workmux window's agent page and nvim's Claude split.
+#   wm-agent page [agent args]    pane command in workmux windows
+#   wm-agent attach [agent args]  nvim's claudecode terminal_cmd
+#   wm-agent default              print the agent the other modes start
+# The agent, claude or pi, is $WM_AGENT, else Omarchy's default agent when it
+# is one of those, else claude. workmux's claude-wm and pi-wm profiles set
+# WM_AGENT, so `workmux add -a pi-wm` gets pi in the same layout.
+mode=$1
+shift
+
+if [ -n "$WM_AGENT" ]; then
+  # Someone asked for this agent, so an unknown one is an error.
+  case $WM_AGENT in
+  claude | pi) agent=$WM_AGENT ;;
+  *)
+    echo "wm-agent: unknown WM_AGENT '$WM_AGENT' (want claude or pi)" >&2
+    exit 1
+    ;;
+  esac
+else
+  agent=claude
+  omarchy=$HOME/.config/omarchy/defaults/agent
+  if [ -f "$omarchy" ]; then
+    read -r default <"$omarchy"
+    case $default in
+    claude | pi) agent=$default ;;
+    esac
+  fi
+fi
+
+case $mode in
+default)
+  echo "$agent"
+  exit
+  ;;
+page | attach) ;;
+*)
+  echo "usage: wm-agent page|attach [agent args] | wm-agent default" >&2
+  exit 1
+  ;;
+esac
+
+top=$(git rev-parse --show-toplevel 2>/dev/null || pwd -P)
+# The main repo, wherever worktree_dir puts the trees; repo and tree both
+# name the session, so one branch name in two repos gets two sessions.
+main=$(dirname "$(git -C "$top" rev-parse --path-format=absolute --git-common-dir 2>/dev/null || echo "$top/.git")")
+name=$(printf 'wmc_%s_%s' "$(basename "$main")" "$(basename "$top")" | tr -c 'A-Za-z0-9_-' '_')
+
+if [ "$mode" = page ]; then
+  tmux set -p -t "$TMUX_PANE" @agent 1
+  page=$TMUX_PANE
+else
+  page=$(tmux list-panes -t "$TMUX_PANE" -F '#{pane_id} #{@agent}' | awk '$2 == 1 { print $1 }')
+fi
+
+if tmux has-session -t "=$name" 2>/dev/null; then
+  # Attaching would silently drop a new prompt: fail where it can be seen.
+  if [ "$mode" = page ] && [ $# -gt 0 ]; then
+    running=$(tmux show -qv -t "=$name" @wm_agent)
+    echo "wm-agent: session $name already runs ${running:-an agent}; not passing: $*" >&2
+    echo "wm-agent: close its windows or run: tmux kill-session -t =$name" >&2
+    exit 1
+  fi
+else
+  if [ "$agent" = claude ]; then
+    # Claude checks a worktree's trust against its main repo, so trust that
+    # once; only from a linked worktree, never for an arbitrary directory.
+    cfg=$HOME/.claude.json
+    if [ "$main" != "$top" ] && [ -f "$cfg" ] &&
+      ! jq -e --arg d "$main" '.projects[$d].hasTrustDialogAccepted == true' "$cfg" >/dev/null; then
+      tmp=$(mktemp "$cfg.XXXXXX") &&
+        jq --arg d "$main" '.projects[$d].hasTrustDialogAccepted = true' "$cfg" >"$tmp" &&
+        mv "$tmp" "$cfg"
+    fi
+    sessions=$HOME/.claude/projects/$(printf %s "$top" | tr -c 'A-Za-z0-9' '-')
+  else
+    # pi files a cwd's sessions under --<path without its leading />--,
+    # with / turned into -.
+    sessions=$HOME/.pi/agent/sessions/--$(printf %s "${top#/}" | tr '/\\:' '---')--
+  fi
+
+  # Reopening a worktree picks its conversation back up.
+  if [ $# -eq 0 ] && ls "$sessions/"*.jsonl >/dev/null 2>&1; then
+    set -- --continue
+  fi
+  if [ "$agent" = claude ]; then
+    set -- claude --ide "$@"
+  else
+    set -- pi "$@"
+  fi
+
+  # workmux's hooks act on $TMUX_PANE, which tmux resets inside the session;
+  # pointing it at the page puts the status on the worktree's own window.
+  tmux new-session -d -s "$name" -c "$top" env TMUX_PANE="${page:-}" "$@"
+  tmux set -t "$name" status off
+  tmux set -t "$name" @wm_agent "$agent"
+fi
+
+# Gone with the last client, so closing the workmux window ends this agent.
+# Set once attached: an unattached session would be destroyed on the spot.
+TMUX= exec tmux attach -t "=$name" \; set destroy-unattached on

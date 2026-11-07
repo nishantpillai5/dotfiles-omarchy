@@ -1,0 +1,46 @@
+# Agent pane runs this wrapper, which starts the agent in a hidden tmux session
+# (wmc_<repo>_<worktree>) that this pane attaches to. workmux single-quotes the
+# command, so ~ and $HOME never expand; wm-agent is found on PATH in
+# ~/.local/bin.
+# The pane below must use <agent>, or -P is refused.
+# `type` tells workmux how to pass prompts and --continue through the wrapper.
+# The default `wm` runs $WM_AGENT, else Omarchy's default agent, else claude;
+# its claude-style `-- <prompt>` and --continue suit pi too. Force one agent
+# per worktree with `workmux add -a claude-wm` or `-a pi-wm`.
+agent: wm
+agents:
+  wm:
+    type: claude
+    command: wm-agent
+    args: [page]
+  claude-wm:
+    type: claude
+    command: wm-agent
+    args: [page]
+    env:
+      WM_AGENT: claude
+  pi-wm:
+    type: pi
+    command: wm-agent
+    args: [page]
+    env:
+      WM_AGENT: pi
+nerdfont: true
+status_format: false
+window_prefix: ""
+status_icons:
+  working: "󰚩"
+  waiting: "󰍡"
+  done: "󰄬"
+panes:
+  - command: CLAUDE_WM=1 nvim
+  - command: <agent>
+    split: horizontal
+    zoom: true
+dashboard:
+  sort_mode: natural
+sidebar:
+  position: top
+  width: 3%
+  layout: compact
+  enter_action: focus # "focus" (default) or "select"

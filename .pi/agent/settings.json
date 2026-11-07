@@ -1,0 +1,17 @@
+{
+  "tuiMode": "regular",
+  "enableInstallTelemetry": false,
+  "theme": "omarchy-system",
+  "packages": [
+    "npm:pi-web-search",
+    "npm:pi-memory",
+    "npm:pi-context-view",
+    "npm:pi-tokenburn",
+    "npm:@narumitw/pi-usage",
+    "npm:@gotgenes/pi-permission-system",
+    "npm:pi-messenger@0.15.2",
+    "npm:@magnitudedev/pi-extension@0.0.2"
+  ],
+  "defaultProvider": "magnitude",
+  "defaultModel": "qwen3.8-27b:gguf:q4"
+}
