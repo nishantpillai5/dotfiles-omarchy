@@ -1,0 +1,8 @@
+[tools]
+"cargo:raine/workmux" = "latest"
+direnv = "latest"
+fastfetch = "latest"
+rust = "latest"
+yazi = "latest"
+
+[settings.upgrade]
