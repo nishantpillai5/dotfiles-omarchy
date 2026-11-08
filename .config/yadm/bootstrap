@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# Runs automatically via: yadm clone <url> --bootstrap
+# (or manually later via: yadm bootstrap)
+#
+# Fresh Omarchy (Arch) machine setup, beyond the dotfiles themselves.
+# By the time this runs, yadm has already checked out the repo into $HOME.
+set -euo pipefail
+
+DEVPOD_VERSION="v0.6.15"
+
+if ! grep -qi '^ID=arch' /etc/os-release 2>/dev/null; then
+  echo "bootstrap: expects Arch/Omarchy, found: $(grep -i '^NAME=' /etc/os-release 2>/dev/null || echo unknown)" >&2
+  exit 1
+fi
+
+echo "==> 1/4 pacman tools"
+sudo pacman -S --needed yadm git lazygit lazydocker git-delta tmux bun
+
+echo "==> 2/4 mise tools (yazi, fastfetch, direnv, ... — pinned in .config/mise/config.toml)"
+if ! command -v mise &>/dev/null; then
+  # Omarchy usually ships mise; fall back to the official installer
+  curl -fsSL https://mise.run | sh
+  export PATH="$HOME/.local/bin:$PATH"
+fi
+# .config/mise/config.toml now lives in $HOME, which mise auto-trusts
+mise install
+
+echo "==> 3/4 devpod (release binary; not in any package manager we use)"
+if ! command -v devpod &>/dev/null; then
+  mkdir -p ~/.local/bin
+  curl -fsSL -o ~/.local/bin/devpod \
+    "https://github.com/loft-sh/devpod/releases/download/${DEVPOD_VERSION}/devpod-linux-amd64"
+  chmod +x ~/.local/bin/devpod
+fi
+devpod version
+
+echo "==> 4/4 tmux plugins (tpm)"
+if [ ! -d ~/.tmux/plugins/tpm ]; then
+  git clone --depth 1 https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+fi
+
+cat <<'EOF'
+
+Done. Remaining manual steps:
+  1. git identity (kept out of the repo on purpose):
+       git config --global user.name "..."
+       git config --global user.email "..."
+     credentials go in untracked ~/.config/git/config_local
+  2. if yadm reported conflicting files on checkout, review them
+     (existing files in $HOME are kept, not overwritten)
+  3. open a new shell (picks up ~/.bashrc: aliases, aa, f, fastfetch hook, direnv)
+  4. start tmux, press prefix + I to install the tmux plugins
+  5. run `direnv allow` in each directory that has a .envrc
+EOF
