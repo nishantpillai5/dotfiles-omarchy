@@ -16,7 +16,7 @@ fi
 echo "==> 1/4 pacman tools"
 sudo pacman -S --needed yadm git lazygit lazydocker git-delta tmux bun
 
-echo "==> 2/4 mise tools (yazi, fastfetch, direnv, ... — pinned in .config/mise/config.toml)"
+echo "==> 2/4 mise tools (workmux, yazi, fastfetch, direnv, rust — pinned in .config/mise/config.toml)"
 if ! command -v mise &>/dev/null; then
   # Omarchy usually ships mise; fall back to the official installer
   curl -fsSL https://mise.run | sh
